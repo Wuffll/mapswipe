@@ -1,6 +1,7 @@
 // @flow
 import firebase from '@react-native-firebase/app';
 import levels from './Levels';
+import { getLevelForContributionCount } from '../../src/shared/reducers/ui';
 
 export default {
     /**
@@ -32,7 +33,7 @@ export default {
      * @returns {*}
      */
     getLevel(): number {
-        return this.getLevelForExp(this.distance);
+        return this.getLevelForContributionCount(this.distance);
     },
 
     /**
@@ -50,37 +51,6 @@ export default {
      */
     getCustomLevelObject(customLevel: number): {} {
         return levels[customLevel];
-    },
-
-    /**
-     * Get the level for the exp
-     * @param exp
-     * @returns {number}
-     */
-
-    getLevelForExp(exp: number): number {
-        let toReturn: number = 1;
-        try {
-            const parent = this;
-            Object.keys(levels).forEach(level => {
-                if (exp > levels[parent.maxLevel]) {
-                    toReturn = parent.maxLevel;
-                } else if (
-                    exp > levels[level].expRequired &&
-                    exp < levels[parseInt(level, 10) + 1].expRequired
-                ) {
-                    toReturn = parseInt(level, 10);
-                }
-            });
-            if (toReturn > this.maxLevel) {
-                toReturn = this.maxLevel;
-            } else if (toReturn < 1) {
-                toReturn = 1;
-            }
-        } catch (err) {
-            console.log(err);
-        }
-        return toReturn;
     },
 
     /**
